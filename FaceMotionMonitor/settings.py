@@ -103,7 +103,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'fmm_database',
         'USER': 'root',
-        'PASSWORD': '',
+        'PASSWORD': 'szikimini',
         'HOST': '127.0.0.1',
         'PORT': '3306'
     }
@@ -180,5 +180,3 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 BASE_DIR = Path(__file__).resolve().parent.parent
 TEMP_DIR = BASE_DIR / 'temp'
 TEMP_DIR.mkdir(parents=True, exist_ok=True)  # Ensure the directory exists
-
-

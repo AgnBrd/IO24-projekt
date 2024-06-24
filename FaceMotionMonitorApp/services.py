@@ -185,10 +185,10 @@ def get_reports_for_patient(patient_id):
 #FOR REPORTS PATIENT DATA
 def get_patient_details(patient_id):
     # Fetch the patient object based on the patient_id
-    patient = Patient.objects.filter(patient_id=patient_id)
-    user_profile = patient.user_id_id
+    patient = Patient.objects.get(id=patient_id)
+    user_id = patient.user_id_id
     # Fetch the related user profile
-    user_profile = user_profile.id
+    user_profile = UserProfile.objects.get(id=user_id)
 
     # Prepare the patient details
     patient_details = {
@@ -309,13 +309,10 @@ def get_landmarks_for_patient(patient_id):
 
 
 ## FOR REPORTS
-def get_data_for_reports(patient_id, end_date):
+def get_data_for_reports(patient_id):
     try:
         # Pobierz raporty dla danego pacjenta
-        if end_date:
-            reports = Reports.objects.filter(patient_id=patient_id, date__lte=end_date)
-        else:
-            reports = Reports.objects.filter(patient_id=patient_id)
+        reports = Reports.objects.filter(patient_id=patient_id)
 
         dates = [report.date for report in reports]
         differences_mouth = [report.difference_mouth for report in reports]

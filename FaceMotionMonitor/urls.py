@@ -21,7 +21,7 @@ from django.views.generic import TemplateView
 from FaceMotionMonitorApp.views import DoctorRegistration, LoginView, AddPatient, PatientRegistration, \
     video_stream, start_video_processing, capture_photo, \
     delete_user, GetUserRoleView, get_patients_by_doctor, get_reports_for_doctor_view, patient_details_view, \
-    get_reports_for_patient_view, LogoutView, delete_patient, get_all_patients, add_recording
+    get_reports_for_patient_view, LogoutView, delete_patient, get_all_patients, add_recording, CreateReportView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -41,10 +41,9 @@ urlpatterns = [
     path('patients/', get_all_patients, name='get_all_patients'),
     path('add_recording/', add_recording, name='add_recording'),
 
-
     path('logout/', LogoutView.as_view(), name='logout'),
 
-
+    path('create-report/', CreateReportView.as_view(), name='create-report'),
 
 
     # paths for testing in the postman, later there will be one path ----------------

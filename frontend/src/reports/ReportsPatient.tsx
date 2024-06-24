@@ -73,12 +73,30 @@ const ReportsPatient: React.FC = () => {
         navigate(-1);
     };
 
-    const handleGenerateReport = () => {
-        // Implement this function as needed
+    const handleGenerateReport = async () => {
+        try {
+            const response = await fetch(`http://localhost:8000/create-report/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to generate report');
+            }
+
+            // If success, the browser will automatically download the PDF file
+        } catch (error) {
+            // @ts-ignore
+            console.error('Error generating report:', error.message);
+            setError('Error generating report. Please try again.');
+        }
     };
 
     useEffect(() => {
-            fetchReports();
+        fetchReports();
     }, []);
 
     const fetchReports = async () => {

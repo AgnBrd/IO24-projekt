@@ -1,16 +1,18 @@
 import base64
+import os
 from datetime import date, datetime
 
 import cv2
 import numpy as np
 from django.core.files.storage import default_storage
-from django.http import HttpResponseRedirect, HttpResponse, StreamingHttpResponse, JsonResponse
+from django.http import HttpResponseRedirect, HttpResponse, StreamingHttpResponse, JsonResponse, FileResponse
 from django.views import View
 from rest_framework import views
 from rest_framework.decorators import api_view
 
 from . import services
 from .ai_model.brudnopis import VideoProcessor
+from .ai_model.reports.report import create_report
 from .backends.auth_backend import AuthBackend
 from .models import Role, Sex, UserProfile
 from .serializers import *
@@ -409,9 +411,6 @@ def add_recording(request):
         return Response(recordings_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
-
-
 # def calculate_difference(landmark_list, patient_id):
 #     # distances = [data['distance'] for data in landmarks_data]
 #     processor = VideoProcessor()
@@ -437,6 +436,7 @@ def add_recording(request):
 #     eyebrow_diff = current_eyebrow - ref_eyebrow
 #     return mouth, eyebrow_diff
 #
+
 def calculate_difference(landmark_list, patient_id):
     processor = VideoProcessor()
 
@@ -655,3 +655,30 @@ def get_all_patients(request):
         return Response(serializer.data, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class CreateReportView(APIView):
+    def post(self, request):
+        try:
+            # Generate the report
+            user_id = request.session.get('user_id')
+            patient_id = Patient.objects.get(user_id=user_id).id
+
+            today = date.today()
+            patient_data = get_patient_details(patient_id)
+            file_name = patient_data["name"] + "report" + str(today) + ".pdf"
+            x = create_report(patient_id)
+
+            # Path to the generated PDF
+            file_path = os.path.join(os.getcwd(), x)
+            return Response({'error': 'dziala'}, status=status.HTTP_200_OK)
+            # Return the PDF file as a response
+            # if os.path.exists(file_path):
+            #     with open(file_path, 'rb') as pdf_file:
+            #         response = FileResponse(pdf_file, content_type='application/pdf')
+            #         response['Content-Disposition'] = f'attachment; filename="{file_name}"'
+            #         return response
+            # else:
+            #     return Response({'error': 'Report generation failed.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
